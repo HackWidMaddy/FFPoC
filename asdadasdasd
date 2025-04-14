@@ -1,0 +1,38 @@
+// Test file with sensitive data
+
+// AWS Credentials
+const awsConfig = {
+    accessKeyId: 'AKIAIOSFODNN7EXAMPLE',
+    secretAccessKey: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+    region: 'us-west-2'
+};
+
+// API Keys
+const apiKeys = {
+    stripe: 'sk_test_51NcYtqSGhx4EXAMPLE',
+    sendgrid: 'SG.4bFEXAMPLE.7EXAMPLE',
+    twilio: 'ACb0dEXAMPLEEXAMPLEEXAMPLE'
+};
+
+// Database Credentials
+const dbConfig = {
+    host: 'localhost',
+    port: 5432,
+    user: 'admin',
+    password: 'SuperSecret123!',
+    database: 'test_db'
+};
+
+// JWT Token
+const jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+
+// Private Key
+const privateKey = `-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAz7v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5
+z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5
+z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5z8v5
+-----END RSA PRIVATE KEY-----`;
+
+// Connection String
+const mongoUrl = 'mongodb://admin:password123@localhost:27017/mydb';
+const postgresUrl = 'postgres://admin:password123@localhost:5432/mydb'; 
